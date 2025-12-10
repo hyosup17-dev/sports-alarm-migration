@@ -1,0 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* body, .title, .navbar 관련 직접 짠 코드는 모두 지우셔도 됩니다. */
+/* Tailwind가 알아서 다 처리해 줍니다. */

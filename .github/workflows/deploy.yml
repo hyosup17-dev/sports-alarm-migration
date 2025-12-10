@@ -1,0 +1,87 @@
+name: Deploy Lambdas
+
+on:
+  push:
+    branches:
+      - main  # main 브랜치에 푸시될 때만 실행
+
+jobs:
+  # ======================================================
+  # 1. 크롤러 (Crawler) 배포
+  # ======================================================
+  deploy-crawler:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies & Zip
+        run: |
+          mkdir package
+          # 1. requests 라이브러리 설치
+          pip install requests -t ./package
+          # 2. 코드 복사 (crawler_package 폴더에 있는 lambda_function.py 사용)
+          cp crawler_package/lambda_function.py ./package/
+          # 3. 압축 (zip)
+          cd package
+          zip -r ../crawler.zip .
+          cd ..
+        
+      - name: Deploy to AWS Lambda
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          # AWS CLI를 사용해서 코드만 쓱 업데이트
+          aws lambda update-function-code \
+            --function-name SportsDataCrawler \
+            --zip-file fileb://crawler.zip
+
+  # ======================================================
+  # 2. 알람 봇 (Notifier) 배포
+  # ======================================================
+  deploy-notifier:
+    runs-on: ubuntu-latest
+    needs: deploy-crawler # 크롤러 배포 끝나면 시작 (동시에 해도 되지만 순서대로)
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Create Firebase Key File
+        # 깃허브 시크릿에 넣어둔 JSON 내용을 꺼내서 파일로 만듦
+        run: |
+          echo '${{ secrets.FIREBASE_KEY_JSON }}' > serviceAccountKey.json
+
+      - name: Install dependencies & Zip
+        run: |
+          mkdir notifier_pkg
+          # 1. 라이브러리 설치
+          pip install firebase-admin boto3 requests -t ./notifier_pkg
+          # 2. 코드 및 키 파일 복사
+          cp notifier_package/notifier.py ./notifier_pkg/
+          cp serviceAccountKey.json ./notifier_pkg/
+          # 3. 압축
+          cd notifier_pkg
+          zip -r ../notifier.zip .
+          cd ..
+
+      - name: Deploy to AWS Lambda
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          aws lambda update-function-code \
+            --function-name SportsNotifier \
+            --zip-file fileb://notifier.zip

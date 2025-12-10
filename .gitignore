@@ -1,0 +1,66 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Terraform 관련 파일 (절대 올리면 안 됨)
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+
+# 로컬 스크립트 제외
+crawler.py
+inject_test_data.py
+test_auto_subscribe.py
+
+# Terraform 비밀 변수 파일 무시
+*.tfvars
+terraform.tfvars
+terraform/terraform.tfvars
+
+serviceAccountKey.json
+.env.local
+.env
+.env.docker
+serviceAccountKey.json
+terraform.tfvars
+node_modules/
+.next/

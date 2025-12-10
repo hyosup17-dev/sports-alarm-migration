@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+.env
+.env.local
+terraform
+docker_crawler
+notifier_package
+crawler_package

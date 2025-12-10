@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: sports-crawler
+spec:
+  schedule: "0 19 * * *" # 매일 새벽 4시 (KST)
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: crawler
+            image: crawler-img:latest
+            imagePullPolicy: Never # ★ 중요: 인터넷에서 찾지 말고 내 컴퓨터 이미지를 써라!
+            envFrom:
+            - secretRef:
+                name: sports-secrets
+          restartPolicy: OnFailure
