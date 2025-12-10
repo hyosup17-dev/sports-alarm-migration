@@ -21,7 +21,7 @@ graph LR
     Notifier --> |Push| FCM[🔥 Firebase FCM]
     FCM --> |Alarm| User
 
-![전체 아키텍처](./diagram.png)
+![Architecture](./architecture_v2.png)
 
 🛠️ Tech Stack (기술 스택)
 분류                                  기술
