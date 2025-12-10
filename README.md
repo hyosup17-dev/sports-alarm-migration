@@ -5,22 +5,6 @@
 🏗️ Architecture (아키텍처)
 이 프로젝트는 Serverless 아키텍처에서 시작하여 On-Premise Kubernetes 환경으로 마이그레이션 되었습니다.
 
-graph LR
-    User[📱 User] --> |Web/PWA| Amplify[🖥️ Frontend (Next.js)]
-    Amplify --> |API| DDB[(DynamoDB)]
-    
-    subgraph Automation
-        Cron[⏰ Scheduler] --> Crawler[⚙️ Crawler (Python)]
-        Cron --> Notifier[🔔 Notifier (Python)]
-    end
-    
-    Crawler --> |Data| Naver[N Naver Sports]
-    Crawler --> |Save| DDB
-    
-    Notifier --> |Read| DDB
-    Notifier --> |Push| FCM[🔥 Firebase FCM]
-    FCM --> |Alarm| User
-
 ![Architecture](./architecture_v2.png)
 
 🛠️ Tech Stack (기술 스택)
