@@ -64,3 +64,4 @@ serviceAccountKey.json
 terraform.tfvars
 node_modules/
 .next/
+secrets.yaml
